@@ -30,10 +30,12 @@ class ConnectionManager:
 manager = ConnectionManager()
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
-    await manager.connect(websocket)
-    if room_id in room_states:
-        initial_code = room_states[room_id]
-        await websocket.send_text(initial_code)
+    await manager.connect(websocket) 
+    
+    initial_message = room_states.get(room_id, "")
+    await websocket.send_text(initial_message)
+    # -----------------------
+    
     try:
         while True:
             data = await websocket.receive_text()
